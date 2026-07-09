@@ -8,40 +8,44 @@
  */
 
 function addProperties(state, extraData) {
-  Object.assign(state, extraData);
+  const stateCopy = { ...state };
+
+  Object.assign(stateCopy, extraData);
+
+  return stateCopy;
 }
 
 function removeProperties(state, keysToRemove) {
+  const stateCopy = { ...state };
+
   for (let i = 0; i < keysToRemove.length; i++) {
-    delete state[keysToRemove[i]];
+    delete stateCopy[keysToRemove[i]];
   }
+
+  return stateCopy;
 }
 
 function clear(state, massive) {
-  for (const key in state) {
-    delete state[key];
-  }
+  return {};
 }
 
 function transformStateWithClones(state, actions) {
   const stateHistory = [];
-  const currentState = { ...state };
+  let currentState = { ...state };
 
   for (const action of actions) {
     switch (action.type) {
       case 'addProperties':
-        addProperties(currentState, action.extraData);
-        stateHistory.push({ ...currentState });
+        currentState = addProperties(currentState, action.extraData);
         break;
       case 'removeProperties':
-        removeProperties(currentState, action.keysToRemove);
-        stateHistory.push({ ...currentState });
+        currentState = removeProperties(currentState, action.keysToRemove);
         break;
       case 'clear':
-        clear(currentState);
-        stateHistory.push({ ...currentState });
+        currentState = clear(currentState);
         break;
     }
+    stateHistory.push({ ...currentState });
   }
 
   return stateHistory;
