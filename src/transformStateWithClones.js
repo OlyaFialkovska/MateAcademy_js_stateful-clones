@@ -25,7 +25,7 @@ function removeProperties(state, keysToRemove) {
   return stateCopy;
 }
 
-function clear(state, massive) {
+function clear() {
   return {};
 }
 
@@ -42,8 +42,10 @@ function transformStateWithClones(state, actions) {
         currentState = removeProperties(currentState, action.keysToRemove);
         break;
       case 'clear':
-        currentState = clear(currentState);
+        currentState = clear();
         break;
+      default:
+        throw new Error('Unknown action type');
     }
     stateHistory.push({ ...currentState });
   }
